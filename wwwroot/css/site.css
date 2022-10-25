@@ -1,18 +1,108 @@
+:root {
+    --ap-primaryColor: #0869b8;
+    --ap-primaryColorDark: #002a4e;
+    --ap-primaryColorLight: #edf5fc;
+    --ap-secondaryColor: #fff0d9;
+    --ap-secondaryColorLight: #fff8ec;
+    --ap-dark-color: #131313;
+    --ap-light-gray: #d9d9d9;
+    --ap-light-color: #eeeeee;
+
+    --ap-title-font: 'Fira Sans', sans-serif;
+    --ap-body-font: 'Roboto', sans-serif;
+}
+
 html {
   font-size: 14px;
 }
 
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
-}
 
-html {
-  position: relative;
-  min-height: 100%;
+html,
+body {
+  height: 100%;
 }
 
 body {
+  background-color: var(--ap-primaryColorLight);
+  display: flex;
+  flex-direction: column;
   margin-bottom: 60px;
+  color: var(--ap-dark-color);
+  font-family: var(--ap-body-font);
+  font-weight: 400;
+  font-size: 1.2rem;
 }
+
+nav {
+    background-color: var(--ap-primaryColorLight);
+}
+
+.navShadow {
+    box-shadow: 0px 15px 30px rgba(0, 0, 0, 0.1);
+}
+
+
+main {
+    background-color: var(--ap-primaryColorLight);
+}
+
+.content {
+    flex: 1 0 auto;
+    padding-top: 7.5rem;
+    padding-bottom: 2.5rem;
+}
+
+footer {
+    flex-shrink: 0;
+    background-color: var(--ap-secondaryColor);
+}
+
+/* Button Overrides */
+.btn-outline-primary {
+    color: var(--ap-dark-color);
+    border-color: var(--ap-primaryColor) !important;
+}
+
+.btn-outline-primary:hover,
+.btn-outline-primary:active,
+.btn-outline-primary:focus {
+    border-color: var(--ap-secondaryColor) !important;
+    background-color: var(--ap-primaryColor);
+    color: var(--ap-light-color)
+}
+
+.btn-primary {
+    color: white !important;
+    background-color: var(--ap-primaryColor) !important;
+    border-color: var(--ap-secondaryColor);
+}
+
+.btn-primary:hover {
+    filter: brightness(1.2) !important;
+    border-color: var(--ap-primaryColorDark);
+}
+
+.btn-primary:active,
+.btn-primary:visited,
+.btn-primary:focus {
+    filter: brightness(1.2) !important;
+}
+
+/* END Button Ovverrides*/
+
+.btnLink {
+    width: 7rem;
+}
+
+.socialicons {
+    color: var(--ap-primaryColorDark);
+    opacity: 0.9;
+    font-size: 2rem;
+    transition: all 0.4s;
+}
+
+.socialicons:hover {
+    color: var(--ap-primaryColor);
+    opacity: 1;
+}
+

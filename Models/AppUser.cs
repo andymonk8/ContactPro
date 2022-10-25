@@ -8,7 +8,7 @@ namespace ContactPro.Models
     {
         [Required]
         [Display(Name = "First Name")]
-        [StringLength(50,ErrorMessage="The {0} must be at least {2} and max {1} characters long.", MinimumLength =2)]
+        [StringLength(50,ErrorMessage="The {0} must be at least {2} and max {1} characters long.", MinimumLength = 2)]
         public string? FirstName { get; set; }
 
         [Required]
@@ -19,8 +19,11 @@ namespace ContactPro.Models
         [NotMapped]
         public string? FullName { get { return $"{FirstName} {LastName}"; } }
 
+        // Navigation Properties
+        // Old (Deleted on Follow long After Finish?!) // TODO: Make relationship to Contact Model
+        public virtual ICollection<Contact> Contacts { get; set; } = new HashSet<Contact>();
+        // Old (Deleted on Follow long After Finish?!) // TODO: Make relationship to Category Model
+        public virtual ICollection<Category> Categories { get; set; } = new HashSet<Category>();
 
-        // TODO: Make relationship to Contact Model
-        // TODO: Make relationship to Category Model
     }
 }
