@@ -1,8 +1,51 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "ContactPro";
+    Layout = "~/Views/Shared/_LayoutLander.cshtml";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+@* Jacob had First div as class="row"?! *@
+<div class="row">
+    <div class="col-12 col-md-6">
+        <h1 class=heroTitle>
+            All Your <span class="textHighlight">Contacts</span> In One Place
+        </h1>
+        <div class="subtitle">
+            Organize your events by keeping eveyone in the loop.
+            Experience the power of ContactPro - and demo it today!
+            <br />
+            <br />
+            <strong>Built with pride using cutting edge tech:</strong>
+            <br />
+            @*<i class="devicon-dot-net-plain-wordwork colored icon"></i>
+            <i class="devicon-csharp-plain-wordmark colored icon"></i>
+            <i class="devicon-postgresql-plain-wordmark colored icon"></i>
+            <i class="devicon-bootstrap-plain-wordmark colored icon"></i>*@
+        </div>
+        <div class="d-flex align-items-center mt-3">
+  <figure>
+    <img src="https://devicons.railway.app/i/dot-net.svg" class="imgicon" />
+    <figcaption>ASP.NET</figcaption>
+  </figure>
+  <figure>
+    <img src="https://devicons.railway.app/i/csharp.svg" class="imgicon" />
+    <figcaption>C#</figcaption>
+  </figure>
+  <figure>
+    <img src="https://devicons.railway.app/i/postgresql.svg" class="imgicon" />
+    <figcaption>Postgres</figcaption>
+  </figure>
+  <figure>
+    <img src="https://devicons.railway.app/i/bootstrap.svg" class="imgicon" />
+    <figcaption>Bootstrap</figcaption>
+  </figure>
+  <figure>
+    <img src="https://devicons.railway.app/i/railway-dark.svg" class="imgicon" />
+    <figcaption>Railway</figcaption>
+  </figure>
+</div>
+    </div>
+    <div class="col-12 col-md-6 order-first order-md-last">
+        <img src="~/img/FrankLangella.png" class="img-fluid" />
+    </div>
+
 </div>

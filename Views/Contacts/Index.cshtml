@@ -1,10 +1,105 @@
 ﻿@model IEnumerable<ContactPro.Models.Contact>
+@using ContactPro.Services.Interfaces
+
+@inject IImageService ImageService
 
 @{
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+@*Antonio Had?! (" <h1>MY Contacts</h1> ")*@
+
+@*Was on LIne 16?! (" asp-controller="Contacts" ")*@
+
+<div class="row">
+  <div class="col-12 text-end mb-2">
+    <a class="btn btn-primary rounded-pill" asp-action="Create">Create New</a>
+  </div>
+</div>
+<div class="row g-2">
+  <div class="col-12 col-md-4 sideNav">
+    <form asp-action="SearchContacts" asp-controller="Contacts" method="post">
+      <div class="input-group">
+        <input class="form-control" type="search" name="searchString"
+               placeholder="Search Term" />
+        <input type="submit" class="btn btn-outline-primary" value="Search" />
+      </div>
+    </form>
+    <form asp-action="Index" asp-controller="Contacts" method="post">
+      <div class="mt-5">
+        <label class="form-label fw-bold">CATEGORY FILTER</label>
+
+        <select name="categoryId" asp-items="@ViewBag.CategoryId" class="form-control"
+                onchange="this.form.submit()" onfocus="this.selectedIndex=-1;this.blur();">
+          <option>All Contacts</option>
+        </select>
+      </div>
+    </form>
+  </div>
+  <div class="col-12 col-md-8">
+    <div class="row row-cols-1 g-3">
+        @foreach(Contact contact in Model)
+        {
+      <div class="col">
+        <div class="card mb-3">
+          <div class="row g-0">
+            <div class="col-md-4 square-img-container">
+              <img src="@ImageService.ConvertByteArrayToFile(contact.ImageData!, contact.ImageType!)" class="square-img rounded-start" alt="...">
+            </div>
+            <div class="col-md-8">
+              <div class="card-body">
+                <h5 class="card-title">@contact.FullName</h5>
+                <address class="card-text">                                        
+                  @contact.Address1<br />
+                  @contact.Address2<br />
+                  @contact.City, @contact.State @contact.ZipCode
+                </address>
+                <div class="card-text">
+                  <span class="fw-bold me-2">Phone:</span>@contact.PhoneNumber
+                </div>
+                <div class="card-text">
+                  <span class="fw-bold me-2">Email:</span>@contact.Email
+                </div>
+                <div class="fs-4">
+                  <a class="me-3 editIcons" asp-action="Edit" asp-route-id="@contact.Id"><i class="bi bi-pencil-fill "></i></a>                                        
+                  <a class="me-3 editIcons" asp-action="EmailContact" asp-route-id="@contact.Id"><i class="bi bi-envelope-fill "></i></a>
+                  <a class="me-3 editIcons" asp-action="Delete" asp-route-id="@contact.Id"><i class="bi bi-trash-fill text-danger "></i></a>
+                </div>                                      
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      }
+    </div>
+  </div>
+</div>
+
+@section scripts{
+    <!--Sweet Alerts-->
+    <script>
+        let message = '@(ViewBag.SwalMessage)';
+
+        if (!message.includes("Error") && message != '') {
+            Swal.fire({
+                backdrop: false,
+                icon: 'success',
+                title: message,
+                showConfirmButton: true
+            })
+        } else if (message.includes("Error")) {
+            Swal.fire({
+                backdrop: false,
+                                icon: 'error',
+                title: 'Oops...',
+                text: message
+            })
+        }
+    </script>
+}
+
+
+@*<h1>Index</h1>
 
 <p>
     <a asp-action="Create">Create New</a>
@@ -49,10 +144,7 @@
                 @Html.DisplayNameFor(model => model.ImageData)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ImageType)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.AppUser)
+                Categories
             </th>
             <th></th>
         </tr>
@@ -94,13 +186,13 @@
                 @Html.DisplayFor(modelItem => item.Created)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.ImageData)
+                <img src="@ImageService.ConvertByteArrayToFile(item.ImageData!,item.ImageType!)" style="width:80%;height:80%" />
             </td>
+            
             <td>
-                @Html.DisplayFor(modelItem => item.ImageType)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.AppUser.Id)
+                @foreach(Category category in item.Categories){
+                    <p>@category.Name</p>
+                }
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
@@ -111,3 +203,4 @@
 }
     </tbody>
 </table>
+*@

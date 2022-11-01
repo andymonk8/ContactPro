@@ -3,34 +3,110 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ContactPro.Data;
 using ContactPro.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 
 namespace ContactPro.Controllers
 {
     public class CategoriesController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<AppUser> _userManager;
+        private readonly IEmailSender _emailSender;
 
-        public CategoriesController(ApplicationDbContext context)
+        public CategoriesController(ApplicationDbContext context,
+                                    UserManager<AppUser> userManager,
+                                    IEmailSender emailSender)
         {
             _context = context;
+            _userManager = userManager;
+            _emailSender = emailSender;
         }
 
         // GET: Categories
-        public async Task<IActionResult> Index()
+        [Authorize]
+        public async Task<IActionResult> Index(string? swalMessage = null)
         {
-            var applicationDbContext = _context.Category.Include(c => c.AppUser);
-            return View(await applicationDbContext.ToListAsync());
+
+            ViewData["SwalMessage"] = swalMessage;
+
+            string userId = _userManager.GetUserId(User);
+
+            List<Category> categories = await _context.Categories
+                                                      .Where(c => c.AppUserId == userId)
+                                                      .Include(c => c.AppUser)
+                                                      .ToListAsync();
+            return View(categories);
+        }
+
+
+        [Authorize]
+        [HttpGet]
+        public async Task<IActionResult> EmailCategory(int? id)
+        {
+            // Allow the current user to get this category by id
+            // only if it is their category.
+
+            string appUserId = _userManager.GetUserId(User);
+            Category? category = await _context.Categories
+                                               .Include(c => c.Contacts)
+                                               .FirstOrDefaultAsync(c => c.Id == id && c.AppUserId == appUserId);
+            if (category == null)
+            {
+                return NotFound();
+            }
+
+            List<string> emails = category!.Contacts.Select(c => c.Email).ToList()!;
+
+            EmailData emailData = new EmailData()
+            {
+                GroupName = category.Name,
+                EmailAddress = string.Join(";",emails),
+                EmailSubject = $"Group Message: {category.Name}"
+            };
+
+
+            return View(emailData);
+        }
+
+        [Authorize]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EmailCategory(EmailData emailData)
+        {
+            if (ModelState.IsValid)
+            {
+                string? swalMessage = string.Empty;
+
+                try
+                {
+                    //Would've Benn Called Email Service but Whatever?!
+                    await _emailSender.SendEmailAsync(emailData!.EmailAddress, emailData.EmailSubject, emailData.EmailBody);
+                    swalMessage = "Success: Email Sent!";
+                    return RedirectToAction("Index", "Categories", new { swalMessage });
+                }
+                catch (Exception)
+                {
+                    swalMessage = "Error: Email Send Failed!";
+                    return RedirectToAction("Index", "Categories", new { swalMessage });
+                    throw;
+                }
+
+            }
+
+            return View(emailData);
         }
 
         // GET: Categories/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.Category == null)
+            if (id == null || _context.Categories == null)
             {
                 return NotFound();
             }
 
-            var category = await _context.Category
+            var category = await _context.Categories
                 .Include(c => c.AppUser)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (category == null)
@@ -42,43 +118,51 @@ namespace ContactPro.Controllers
         }
 
         // GET: Categories/Create
+        [Authorize]
         public IActionResult Create()
         {
-            ViewData["AppUserId"] = new SelectList(_context.Users, "Id", "Id");
             return View();
         }
 
         // POST: Categories/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,AppUserId,Name")] Category category)
+        public async Task<IActionResult> Create([Bind("Id,Name")] Category category)
         {
+            ModelState.Remove("AppUserId");
+
             if (ModelState.IsValid)
             {
+                string userId = _userManager.GetUserId(User);
+                // Don't Need the .AppUserId but is just there for Clairity?!
+                category.AppUserId = userId;
+
                 _context.Add(category);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["AppUserId"] = new SelectList(_context.Users, "Id", "Id", category.AppUserId);
+
             return View(category);
         }
 
         // GET: Categories/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.Category == null)
+            if (id == null || _context.Categories == null)
             {
                 return NotFound();
             }
 
-            var category = await _context.Category.FindAsync(id);
+            Category? category = await _context.Categories.FindAsync(id);
+
             if (category == null)
             {
                 return NotFound();
             }
-            ViewData["AppUserId"] = new SelectList(_context.Users, "Id", "Id", category.AppUserId);
+
             return View(category);
         }
 
@@ -121,12 +205,12 @@ namespace ContactPro.Controllers
         // GET: Categories/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.Category == null)
+            if (id == null || _context.Categories == null)
             {
                 return NotFound();
             }
 
-            var category = await _context.Category
+            var category = await _context.Categories
                 .Include(c => c.AppUser)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (category == null)
@@ -142,14 +226,14 @@ namespace ContactPro.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.Category == null)
+            if (_context.Categories == null)
             {
-                return Problem("Entity set 'ApplicationDbContext.Category'  is null.");
+                return Problem("Entity set 'ApplicationDbContext.Categories'  is null.");
             }
-            var category = await _context.Category.FindAsync(id);
+            var category = await _context.Categories.FindAsync(id);
             if (category != null)
             {
-                _context.Category.Remove(category);
+                _context.Categories.Remove(category);
             }
             
             await _context.SaveChangesAsync();
@@ -158,7 +242,7 @@ namespace ContactPro.Controllers
 
         private bool CategoryExists(int id)
         {
-          return _context.Category.Any(e => e.Id == id);
+          return _context.Categories.Any(e => e.Id == id);
         }
     }
 }

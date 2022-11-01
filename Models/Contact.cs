@@ -50,6 +50,7 @@ namespace ContactPro.Models
         [EmailAddress]
         public string? Email { get; set; }
 
+        //Bryan White Did Not Have Required Attribute for Phone Number but Ocean Does?!
         [Required]
         [Display(Name = "Phone Number")]
         public string? PhoneNumber { get; set; }

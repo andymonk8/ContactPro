@@ -16,7 +16,6 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@v2.15.1/devicon.min.css">
-          
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 </head>
 @{
@@ -51,7 +50,7 @@
             </div>
         </nav>
     </header>
-    <div class="container-fluid content">
+    <div class="container content">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
@@ -76,10 +75,6 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-
-    <!--Sweet Alerts-->
-    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

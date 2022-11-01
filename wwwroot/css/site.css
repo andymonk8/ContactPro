@@ -48,13 +48,17 @@ main {
 
 .content {
     flex: 1 0 auto;
-    padding-top: 7.5rem;
+    padding-top: 2.5rem;
     padding-bottom: 2.5rem;
 }
 
 footer {
     flex-shrink: 0;
     background-color: var(--ap-secondaryColor);
+}
+
+.copyright {
+    font-size: .9rem;
 }
 
 /* Button Overrides */
@@ -106,3 +110,89 @@ footer {
     opacity: 1;
 }
 
+/* BEGIN: Landing Page */
+.icon {
+    font-size: 3.5rem;
+}
+
+.imgicon {
+    display: inline;
+    height: 3.5rem;
+    margin: 0rem .3rem;
+}
+
+figcaption {
+    color: var(--cf-dark-color);
+    font-size: 0.8rem;
+    text-align: center;
+}
+
+.textHighlight {
+    color: var(--ap-primaryColor);
+}
+
+.heroTitle {
+    font-size: 3.5rem;
+    text-transform: uppercase;
+    font-family: var(--ap-title-font);
+    font-weight: 600;
+}
+
+.subtitle {
+    font-size: 1.5rem;
+}
+
+/* END: Landing Page */
+
+/* Square Image CSS */
+
+.square-img-container {
+    position: relative;
+    background-color: var(--ap-primaryColorLight);
+    border-color: var(--ap-light-gray);
+    border-style: solid;
+}
+
+.square-img-container::after{
+    content: "";
+    display: block;
+    padding-bottom: 100%;
+}
+
+.square-img {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top;
+}
+
+/* End Square Image CSS */
+
+.editIcons {
+    font-size: 1.5rem;
+    opacity: .9;
+    color: var(--ap-primaryColorDark);
+}
+
+.editIcons:hover {
+    color: var(--ap-primaryColor);
+    font-weight: bold;
+    opacity: 1;
+    cursor: pointer;
+}
+
+/* Just Another Way / Option of Writing it instead of All Four Different Paddings?! 
+   Goes Clockwise / Clock Wise?! Top, Right, Bottom, Left?! (" padding: 2rem 1rem 2rem 1rem; ") */
+.sideNav {
+    border-radius: 25px;
+    border-color: var(--ap-light-color);
+    border-style: solid;
+    border-width: 3px;
+    background-color: var(--ap-secondaryColor);
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    height: fit-content;
+}
